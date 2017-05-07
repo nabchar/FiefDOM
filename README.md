@@ -2,7 +2,7 @@
 
 fiefDOM is a lightweight JavaScript library with cross-browser functionality that simplifies processing AJAX requests, event handling, as well as DOM traversal and manipulation. The libraries user-friendly syntax allows developers to gain intuitive control over the DOM, while its minimal design helps to decrease file size and loading time.
 
-[INSERT LINK TO DEMO]
+[DEMO]:(https://github.com/nabchar/FiefDOM_demo)
 
 ## Getting Started:
 
@@ -73,4 +73,7 @@ fiefDOM endeavors to simplify manipulation and traversal by frequently combining
 
 - `off(eventType)`: Removes the event listener of the event type specified.
 
-[INSERT LINK TO DEMO] [INSERT LINK TO SOURCE]
+## FiefDOM in Action
+[DEMO]:(https://github.com/nabchar/FiefDOM_demo)
+A simple implementation of the classic game Snake is available as a demo.
+To view this demo, navigate to repo in the link above, clone the repo, and open the html file locally.
