@@ -26,7 +26,7 @@ class DOMNodeCollection {
 
     if (typeof children === 'object' &&
         !(children instanceof DOMNodeCollection)) {
-      children = window.$l(children);
+      children = window.$f(children);
     }
 
     if (typeof children ==='string'){
@@ -51,20 +51,12 @@ class DOMNodeCollection {
     }
   }
 
-  addClass(...classNames){
-    this.each(node => {
-      classNames.forEach(newClass => {
-        node.classList.add(newClass);
-      });
-    });
+  addClass(newClass) {
+    this.each(node => node.classList.add(newClass));
   }
 
-  removeClass(...classNames){
-    this.each(node => {
-      classNames.forEach(oldClass => {
-        node.classList.remove(oldClass);
-      });
-    });
+  removeClass(oldClass) {
+    this.each(node => node.classList.remove(oldClass));
   }
 
   toggleClass(className) {
@@ -95,13 +87,18 @@ class DOMNodeCollection {
     return new DOMNodeCollection(parents);
   }
 
+  eq(integer) {
+    let node = this.nodes[integer];
+    return new DOMNodeCollection([node]);
+  }
+
   find(selector) {
     let collection = [];
     this.each(node => {
       let nodeList =  node.querySelectorAll(selector);
       collection = collection.concat(Array.from(nodeList));
     });
-    return window.$l(collection);
+    return new DOMNodeCollection(collection);
   }
 
   remove() {
@@ -131,87 +128,3 @@ class DOMNodeCollection {
     });
   }
 }
-
-/* harmony default export */ __webpack_exports__["a"] = (DOMNodeCollection);
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__dom_node_collection__ = __webpack_require__(0);
-
-
-window.$l = (arg) => {
-
-  switch (typeof(arg)) {
-    case 'function':
-      return queueDocReadyCallback(arg);
-    case 'string':
-      let nodes = Array.from(document.querySelectorAll(arg));
-      return new __WEBPACK_IMPORTED_MODULE_0__dom_node_collection__["a" /* default */](nodes);
-    default:
-      return new __WEBPACK_IMPORTED_MODULE_0__dom_node_collection__["a" /* default */]([arg]);
-  }
-};
-
-window.$l.extend = (...args) => {
-  return Object.assign(...args);
-};
-
-window.$l.ajax = (options) => {
-  // step 1. instantiate a new request
-  const request = new XMLHttpRequest();
-
-  // step 1.1 define suitable defaults
-  const defaults = {
-    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-    method: 'GET',
-    url: '',
-    data: {},
-    success: (response) => console.log(response),
-    error: (error) => console.log(error)
-  };
-
-  // step 1.2 merge user chosen options with defaults
-  options = window.$l.extend(defaults, options);
-
-  // step 1.3 make sure http verb is in all CAPS
-  options.method = options.method.toUpperCase();
-
-  // step 2. specify the http verb and path
-  request.open(options.method, options.url);
-
-  // step 3 - register a callback
-  request.onload = () => {
-    let response = JSON.parse(request.response);
-    if(request.status === 200) {
-      options.success(response);
-    } else {
-      options.error(response);
-    }
-  };
-
-  // step 4 - send off the request with optional data
-  const optionalData = options.data;
-  request.send(JSON.stringify(optionalData));
-
-};
-
-let _docReadyCallbacks = [];
-let _docReady = false;
-
-const queueDocReadyCallback = (callback) => {
-  if (!_docReady) {
-    _docReadyCallbacks.push(callback);
-  } else {
-    callback();
-  }
-};
-
-document.addEventListener('DOMContentLoaded', () => {
-  _docReady = true;
-  _docReadyCallbacks.forEach( callback => callback() );
-});

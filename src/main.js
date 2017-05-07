@@ -2,7 +2,7 @@ import DOMNodeCollection from './dom_node_collection';
 
 let _docReadyCallbacks = [];
 let _docReady = false;
-window.$l = (arg) => {
+window.$f = (arg) => {
 
   switch (typeof(arg)) {
     case 'function':
@@ -15,11 +15,11 @@ window.$l = (arg) => {
   }
 };
 
-window.$l.extend = (...args) => {
+window.$f.extend = (...args) => {
   return Object.assign(...args);
 };
 
-window.$l.ajax = (options) => {
+window.$f.ajax = (options) => {
   const request = new XMLHttpRequest();
 
   const defaults = {
@@ -31,7 +31,7 @@ window.$l.ajax = (options) => {
     error: (error) => console.log(error)
   };
 
-  options = window.$l.extend(defaults, options);
+  options = window.$f.extend(defaults, options);
 
   options.method = options.method.toUpperCase();
 
