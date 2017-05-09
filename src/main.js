@@ -2,11 +2,11 @@ import DOMNodeCollection from './dom_node_collection';
 
 let _docReadyCallbacks = [];
 let _docReady = false;
-window.$f = (arg) => {
 
+window.$f = (arg) => {
   switch (typeof(arg)) {
     case 'function':
-      return queueDocReadyCallback(arg);
+      return enqueueDocReadyCallback(arg);
     case 'string':
       let nodes = Array.from(document.querySelectorAll(arg));
       return new DOMNodeCollection(nodes);
@@ -20,38 +20,41 @@ window.$f.extend = (...args) => {
 };
 
 window.$f.ajax = (options) => {
-  const request = new XMLHttpRequest();
+  return new Promise((successCallback, errorCallback) => {
+    const request = new XMLHttpRequest();
 
-  const defaults = {
-    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-    method: 'GET',
-    url: '',
-    data: {},
-    success: (response) => console.log(response),
-    error: (error) => console.log(error)
-  };
+    const defaults = {
+      contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+      method: 'GET',
+      url: '',
+      data: {},
+      success: () => {},
+      error: () => {}
+    };
 
-  options = window.$f.extend(defaults, options);
+    options = window.$f.extend(defaults, options);
 
-  options.method = options.method.toUpperCase();
+    options.method = options.method.toUpperCase();
 
-  request.open(options.method, options.url);
+    request.open(options.method, options.url);
 
-  request.onload = () => {
-    let response = JSON.parse(request.response);
-    if(request.status === 200) {
-      options.success(response);
-    } else {
-      options.error(response);
-    }
-  };
+    request.onload = () => {
+      let response = JSON.parse(request.response);
+      if(request.status === 200) {
+        options.success(response);
+        successCallback(response);
+      } else {
+        options.error(response);
+        errorCallback(response);
+      }
+    };
 
-  const optionalData = options.data;
-  request.send(JSON.stringify(optionalData));
-
+    const optionalData = options.data;
+    request.send(JSON.stringify(optionalData));
+  });
 };
 
-const queueDocReadyCallback = (callback) => {
+const enqueueDocReadyCallback = (callback) => {
   if (!_docReady) {
     _docReadyCallbacks.push(callback);
   } else {
