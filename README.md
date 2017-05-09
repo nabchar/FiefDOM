@@ -127,6 +127,6 @@ FiefDOM endeavors to simplify manipulation and traversal by frequently combining
 ## FiefDOM in Action
 A simple implementation of the classic game Snake demonstrates the core functionality of the library. Check out a live demo and the source code below.
 
-[LIVE DEMO](www.nicholaschar.com/FiefDOM_demo)
+[LIVE DEMO](http://www.nicholaschar.com/FiefDOM_demo)
 
 [SOURCE](https://github.com/nabchar/FiefDOM_demo)
