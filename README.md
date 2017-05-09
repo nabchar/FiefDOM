@@ -1,6 +1,6 @@
-# fiefDOM
+# FiefDOM
 
-fiefDOM is a lightweight JavaScript library with cross-browser functionality that simplifies processing AJAX requests, event handling, as well as DOM traversal and manipulation. The libraries user-friendly syntax allows developers to gain intuitive control over the DOM, while its minimal design helps to decrease file size and loading time.
+FiefDOM is a lightweight JavaScript library with cross-browser functionality that simplifies processing AJAX requests, event handling, as well as DOM traversal and manipulation. The libraries user-friendly syntax allows developers to gain intuitive control over the DOM, while its minimal design helps to decrease file size and loading time.
 
 [DEMO]:(https://github.com/nabchar/FiefDOM_demo)
 
@@ -8,12 +8,12 @@ fiefDOM is a lightweight JavaScript library with cross-browser functionality tha
 
 ### Download & Installation
 
-Get started with fiefDOM by downloading or cloning this repo and adding lib/fiefDOM.js in script tag to the head of your root HTML page.
+Get started with FiefDOM by downloading or cloning this repo and adding lib/FiefDOM.js in script tag to the head of your root HTML page.
 
   ```html
   <head>
     <meta charset="utf-8">
-    <script type="text/javascript" src="./lib/fiefDOM.js"   charset="utf-8"></script>
+    <script type="text/javascript" src="./lib/FiefDOM.js"   charset="utf-8"></script>
     ...
   </head>
   ```
@@ -21,29 +21,80 @@ Get started with fiefDOM by downloading or cloning this repo and adding lib/fief
 You can test that the install was successful by entering the following command in your console:
 
   ```js
-  $f(() => alert('Fe-fi-fo-fum, methinks I smell one more fresh download of fiefDOM') )
+  $f(() => alert('Fe-fi-fo-fum, methinks I smell one more fresh download of FiefDOM') )
   ```
 
-## fiefDOM API
+## FiefDOM API
 
 ### DOMNodeCollection
 This library make use of DOMNodeCollections, a custom class containing any number of HTML Elements that preserves the original tree structure of the DOM.
 
-## fiefDOM API
+## FiefDOM API
 
 ### Basics
 
 - `$f(arg)`: The wrapper `$f` is used to create a new instance of a DOMNodeCollection. If the argument is a function, it is stored in a queue and executed only after the document has fully loaded. If the argument is a CSS selector or an HTML element, `$f` will return a DOMNodeCollection of all the HTML elements in the DOM that include that given argument.
+```js
+  window.$f = (arg) => {
+    switch (typeof(arg)) {
+      case 'function':
+        return enqueueDocReadyCallback(arg);
+      case 'string':
+        let nodes = Array.from(document.querySelectorAll(arg));
+        return new DOMNodeCollection(nodes);
+      default:
+        return new DOMNodeCollection([arg]);
+    }
+  };
+```
 
 - `$f.extend(...args)`: Returns merged JavaScript objects
 
-### Simplified AJAX in fiefDOM
+### Simplified AJAX in FiefDOM
 
-- `$f.ajax(options)`: Sends an ajax request with default values for contentType, method, url, data, and success and error callbacks.
+- `$f.ajax(options)`: Sends an AJAX request with default values for contentType, method, url, data, and success and error callbacksn returning a promise.
+
+```js
+
+$f.ajax = (options) => {
+  return new Promise((successCallback, errorCallback) => {
+    const request = new XMLHttpRequest();
+
+    const defaults = {
+      contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+      method: 'GET',
+      url: '',
+      data: {},
+      success: () => {},
+      error: () => {}
+    };
+
+    options = window.$f.extend(defaults, options);
+
+    options.method = options.method.toUpperCase();
+
+    request.open(options.method, options.url);
+
+    request.onload = () => {
+      let response = JSON.parse(request.response);
+      if(request.status === 200) {
+        options.success(response);
+        successCallback(response);
+      } else {
+        options.error(response);
+        errorCallback(response);
+      }
+    };
+
+    const optionalData = options.data;
+    request.send(JSON.stringify(optionalData));
+  });
+};
+```
 
 
 ### Manipulation and Traversal
-fiefDOM endeavors to simplify manipulation and traversal by frequently combining getter and setter logic into a single intuitive function. Please consult the following as a reference.
+FiefDOM endeavors to simplify manipulation and traversal by frequently combining getter and setter logic into a single intuitive function. Please consult the following as a reference.
 
 - `html(string)`: Replaces the inner HTML of each element in a DOMNodeCollection. If no arguments are given, it will return the inner HTML of the element.
 
@@ -74,6 +125,8 @@ fiefDOM endeavors to simplify manipulation and traversal by frequently combining
 - `off(eventType)`: Removes the event listener of the event type specified.
 
 ## FiefDOM in Action
-[DEMO]:(https://github.com/nabchar/FiefDOM_demo)
-A simple implementation of the classic game Snake is available as a demo.
-To view this demo, navigate to repo in the link above, clone the repo, and open the html file locally.
+A simple implementation of the classic game Snake demonstrates the core functionality of the library. Check out a live demo and the source code below.
+
+[LIVE DEMO](www.nicholaschar.com/FiefDOM_demo)
+
+[SOURCE](https://github.com/nabchar/FiefDOM_demo)
