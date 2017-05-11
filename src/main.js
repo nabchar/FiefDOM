@@ -1,4 +1,4 @@
-import DOMNodeCollection from './dom_node_collection';
+const DOMNodeCollection = require('./dom_node_collection.js');
 
 let _docReadyCallbacks = [];
 let _docReady = false;
